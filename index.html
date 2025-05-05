@@ -1,0 +1,1053 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>露出設定</title>
+  <style>
+    :root {
+      --accent-color: #ff5722;
+    }
+    /* Neumorphic Design */
+    body {
+      margin: 0;
+      padding: 0;                 /* no extra padding */
+      min-height: 100vh;          /* allow scrolling if content grows */
+      font-family: 'Helvetica Neue', Arial, sans-serif;
+      background: #e0e0e0;
+      display: flex;
+      justify-content: center;    /* horizontal centering */
+      align-items: center;        /* vertical centering */
+      overflow-y: auto;           /* enable scroll on small screens */
+    }
+
+
+    .container {
+      width: 100%;
+      max-width: 480px;
+      background: #e0e0e0;
+      border-radius: 16px;
+      box-shadow: 8px 8px 16px #bebebe, -8px -8px 16px #ffffff;
+      padding: 24px;
+      box-sizing: border-box;
+    }
+    .section {
+      margin-bottom: 32px;
+    }
+    .section:not(:first-child) {
+      border-top: 1px solid #d1d9e6;
+      padding-top: 24px;
+    }
+    .section > label {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      font-size: 14px;
+      font-weight: 500;
+      color: #555;
+      margin-bottom: 10px;
+      background: #e0e0e0;
+      box-shadow: inset 4px 4px 6px #bebebe, inset -4px -4px 6px #ffffff;
+      border-radius: 12px;
+      padding: 16px;
+    }
+    .input-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 4px;
+    }
+input[type="number"], input[type="text"] {
+      width: 50%;
+      font-size: 14px;
+      padding: 8px;
+      text-align: center;
+      border: none;currentEvDisplay
+      border-radius: 12px;
+      background: #e0e0e0;
+      box-shadow: inset 4px 4px 6px #bebebe, inset -4px -4px 6px #ffffff;
+    }
+    select {
+      font-size: 14px;
+      padding: 8px;
+      text-align: center;
+      border: none;
+      border-radius: 12px;
+      background: #e0e0e0;
+      box-shadow: inset 4px 4px 6px #bebebe, inset -4px -4px 6px #ffffff;
+    }
+    input:focus {
+      outline: none;
+      box-shadow: inset 2px 2px 4px #bebebe, inset -2px -2px 4px #ffffff;
+    }
+    .range-container {
+      margin-top: 6px;
+      padding: 0 8px;
+    }
+    input[type="range"] {
+      -webkit-appearance: none;
+      width: 100%;
+      height: 6px;
+      border-radius: 3px;
+      background: #e0e0e0;
+      box-shadow: inset 4px 4px 6px #bebebe, inset -4px -4px 6px #ffffff;
+    }
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: #e0e0e0;
+      box-shadow: 4px 4px 6px #bebebe, -4px -4px 6px #ffffff;
+      cursor: pointer;
+      margin-top: -5px;
+    }
+    /* Tick marks container */
+    .range-container .range-ticks {
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      padding: 0 8px; /* align with track padding */
+      margin-top: 6px;
+    }
+    /* Each tick: vertical bar and optional label */
+    .range-container .range-ticks > div {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      flex: 0 0 auto;
+    }
+    /* make the first (bar) div in each tick orange */
+    .range-container .range-ticks > div > div:first-child{
+      background: var(--accent-color);
+      height: 10px;
+      width: 1px;
+    }
+    /* ensure any subsequent div (label) inside a tick has no bar styling */
+    .range-container .range-ticks > div > div:not(:first-child){
+      background: none;
+      width: auto;
+      height: auto;
+    }
+    .range-container .range-ticks div {
+      font-size: 10px;
+      color: #333;
+    }
+    .tabs {
+      display: flex;
+      margin-bottom: 16px;
+    }
+    .tab-button {
+      flex: 1;
+      padding: 12px 0;
+      font-size: 15px;
+      background: #e0e0e0;
+      border: none;
+      border-radius: 12px;
+      box-shadow: 4px 4px 6px #bebebe, -4px -4px 6px #ffffff;
+      color: #333;
+      cursor: pointer;
+    }
+    .tab-button.active {
+      background: #e0e0e0;
+      box-shadow: inset 4px 4px 6px #bebebe, inset -4px -4px 6px #ffffff;
+      color: var(--accent-color);
+      font-weight: 600;
+    }
+    .tab-content {
+      display: none;
+    }
+    .tab-content.active {
+      display: block;
+    }
+    .small-button {
+      padding: 6px 12px;
+      font-size: 13px;
+      border: none;
+      border-radius: 12px;
+      background: #e0e0e0;
+      box-shadow: 4px 4px 6px #bebebe, -4px -4px 6px #ffffff;
+      color: var(--accent-color);
+    }
+    .small-button:hover {
+      box-shadow: inset 4px 4px 6px #bebebe, inset -4px -4px 6px #ffffff;
+    }
+    .ev-display{
+      margin-left: 8px;
+      font-size: 14px;
+      font-weight: 500;
+      color: #555;
+    }
+    .results {
+      background: #e0e0e0;
+      border-radius: 12px;
+      box-shadow: inset 4px 4px 6px #bebebe, inset -4px -4px 6px #ffffff;
+      padding: 16px;
+      display: flex;
+      justify-content: center;
+      gap: 32px;
+      font-size: 14px;
+      color: #333;
+    }
+    .switch-group {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .switch {
+      width: 32px;
+      height: 16px;
+      border-radius: 16px;
+      background: #e0e0e0;
+      box-shadow: inset 4px 4px 6px #bebebe, inset -4px -4px 6px #ffffff;
+      position: relative;
+    }
+    .switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+    .slider {
+      position: absolute;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: #e0e0e0;
+      box-shadow: 4px 4px 6px #bebebe, -4px -4px 6px #ffffff;
+      top: -1px;
+      left: -1px;
+      transition: .2s;
+    }
+    .switch input:checked + .slider {
+      transform: translateX(16px);
+    }
+    .toggle-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 16px;
+      font-size: 10px;
+      margin-bottom: 15px;
+    }
+    /* custom plus / minus buttons */
+    .inc-btn,
+    .dec-btn {
+      width: 30px;
+      height: 30px;
+      font-size: 16px;
+      line-height: 30px;
+      border: none;
+      border-radius: 6px;
+      margin-left: 4px;
+      background: #e0e0e0;
+      color: var(--accent-color);
+      cursor: pointer;
+      box-shadow: 4px 4px 6px #bebebe, -4px -4px 6px #ffffff;
+      transition: box-shadow .1s ease, transform .1s ease;
+    }
+    .inc-btn:active,
+    .dec-btn:active {
+      box-shadow: inset 4px 4px 6px #bebebe, inset -4px -4px 6px #ffffff;
+      transform: translateY(1px);
+    }
+    /* hide default number spinners (Chrome/Safari) */
+    input[type=number]::-webkit-outer-spin-button,
+    input[type=number]::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+    /* hide default number spinners (Firefox) */
+    input[type=number] {
+      -moz-appearance: textfield;
+    }
+    .results .ev-block,
+    .results .sugg-block {
+      line-height: 1.4;
+    }
+
+  </style>
+</head>
+<body>
+  <div class="container">
+
+    <!-- タブボタン -->
+    <div class="tabs">
+      <button type="button" class="tab-button active" data-target="currentSettings">Current Settings</button>
+      <button type="button" class="tab-button" data-target="newSettings">New Settings</button>
+    </div>
+
+    <!-- トグル群 -->
+    <div class="toggle-container">
+      <div class="switch-group">
+        <label class="switch">
+          <input type="checkbox" id="shutterModeSwitch">
+          <span class="slider"></span>
+        </label>
+        <span id="shutterModeLabel">Shutter Angle</span>
+      </div>
+      <div class="switch-group">
+        <label class="switch">
+          <input type="checkbox" id="hzSwitch">
+          <span class="slider"></span>
+        </label>
+        <span id="hzLabel">50Hz (East Japan)</span>
+      </div>
+      <div class="switch-group">
+        <label class="switch">
+          <input type="checkbox" id="ndModeSwitch">
+          <span class="slider"></span>
+        </label>
+        <span id="ndModeLabel">0.3 Step</span>
+      </div>
+      <!-- hidden selects powering toggles -->
+      <select id="shutterMode" onchange="toggleShutterMode()" hidden>
+        <option value="angle">シャッターアングル</option>
+        <option value="speed">シャッタースピード</option>
+      </select>
+      <select id="shutterHz" onchange="updateHzMode()" hidden>
+        <option value="50">50Hz（東日本）</option>
+        <option value="60">60Hz（西日本）</option>
+      </select>
+      <select id="ndMode" onchange="updateNdMode()" hidden>
+        <option value="density">0.3ステップ (ND値)</option>
+        <option value="factor">倍数表示 (x2, x4…)</option>
+      </select>
+    </div>
+
+    <!-- 現在の設定 -->
+    <div id="currentSettings" class="tab-content active">
+      <div class="section">
+        <!-- FPS -->
+        <label>
+          <div class="input-row">
+            <span class="param-label-text">Current FPS:</span>
+            <input type="number" id="fpsCurrent" value="23.98"
+                   oninput="syncFpsInputToSlider('fpsCurrent','fpsSliderCurrent')"
+                   onwheel="cyclePreset(event,'fpsCurrent', fpsPresets)">
+            <button type="button" class="dec-btn" onclick="decrementValue('fpsCurrent')">−</button>
+            <button type="button" class="inc-btn" onclick="incrementValue('fpsCurrent')">＋</button>
+          </div>
+          <div class="range-container">
+            <input type="range" id="fpsSliderCurrent" min="0" step="1"
+                   oninput="syncFpsSliderToInput('fpsSliderCurrent','fpsCurrent')">
+            <div class="range-ticks" id="fpsTicksCurrent"></div>
+          </div>
+        </label>
+        <!-- シャッターアングル -->
+        <label id="labelAngleCurrent">
+          <div class="input-row">
+            <span class="param-label-text">Current Shutter Angle:</span>
+            <input type="number" id="angleCurrent" value="172.8"
+                   oninput="syncAngleInputToSlider('angleCurrent','angleSliderCurrent')"
+                   onwheel="cyclePreset(event,'angleCurrent', anglePresets)">
+            <button type="button" class="dec-btn" onclick="decrementValue('angleCurrent')">−</button>
+            <button type="button" class="inc-btn" onclick="incrementValue('angleCurrent')">＋</button>
+            <span id="angleSpeedCurrentText" style="margin-left:8px; font-size:12px; color:#555;"></span>
+          </div>
+          <div class="range-container">
+            <input type="range" id="angleSliderCurrent" min="0" step="1"
+                   oninput="syncAngleSliderToInput('angleSliderCurrent','angleCurrent')">
+            <div class="range-ticks" id="angleTicksCurrent"></div>
+          </div>
+        </label>
+        <!-- シャッタースピード -->
+        <label id="labelSpeedCurrent">
+          <div class="input-row">
+            <span class="param-label-text">Current Shutter Speed:</span>
+            <input type="text" id="speedCurrent" value="1/25"
+                   oninput="syncSpeedInputToSlider('speedCurrent','speedSliderCurrent')"
+                   onwheel="cyclePreset(event,'speedCurrent', shutterSpeedPresets)">
+            <button type="button" class="dec-btn" onclick="decrementValue('speedCurrent')">−</button>
+            <button type="button" class="inc-btn" onclick="incrementValue('speedCurrent')">＋</button>
+          </div>
+          <div class="range-container">
+            <input type="range" id="speedSliderCurrent" min="0" step="1"
+                   oninput="syncSpeedSliderToInput('speedSliderCurrent','speedCurrent')">
+            <div class="range-ticks" id="speedTicksCurrent"></div>
+          </div>
+        </label>
+        <!-- ISO -->
+        <label>
+          <div class="input-row">
+            <span class="param-label-text">Current ISO:</span>
+            <input type="number" id="isoCurrent" value="800"
+                   oninput="syncIsoInputToSlider('isoCurrent','isoSliderCurrent')"
+                   onwheel="cyclePreset(event,'isoCurrent', isoPresets)">
+            <button type="button" class="dec-btn" onclick="decrementValue('isoCurrent')">−</button>
+            <button type="button" class="inc-btn" onclick="incrementValue('isoCurrent')">＋</button>
+          </div>
+          <div class="range-container">
+            <input type="range" id="isoSliderCurrent" min="0" step="1"
+                   oninput="syncIsoSliderToInput('isoSliderCurrent','isoCurrent')">
+            <div class="range-ticks" id="isoTicksCurrent"></div>
+          </div>
+        </label>
+        <!-- F値 -->
+        <label>
+          <div class="input-row">
+            <span class="param-label-text">Current F-stop:</span>
+            <input type="number" id="fstopCurrent" value="2.8"
+                   oninput="syncFstopInputToSlider('fstopCurrent','fstopSliderCurrent')"
+                   onwheel="cyclePreset(event,'fstopCurrent', fstopPresets)">
+            <button type="button" class="dec-btn" onclick="decrementValue('fstopCurrent')">−</button>
+            <button type="button" class="inc-btn" onclick="incrementValue('fstopCurrent')">＋</button>
+          </div>
+          <div class="range-container">
+            <input type="range" id="fstopSliderCurrent" min="0" max="36" step="1"
+                   oninput="syncFstopSliderToInput('fstopSliderCurrent','fstopCurrent')">
+            <div class="range-ticks" id="fstopTicksCurrent"></div>
+          </div>
+        </label>
+        <!-- ND -->
+        <label>
+          <div class="input-row">
+            <span class="param-label-text">Current ND Value:</span>
+            <input type="number" id="ndCurrent" value="0.3"
+                   oninput="syncNdInputToSlider('ndCurrent','ndSliderCurrent')"
+                   onwheel="cyclePreset(event,'ndCurrent', ndPresets)">
+            <button type="button" class="dec-btn" onclick="decrementValue('ndCurrent')">−</button>
+            <button type="button" class="inc-btn" onclick="incrementValue('ndCurrent')">＋</button>
+          </div>
+          <div class="range-container">
+            <input type="range" id="ndSliderCurrent" min="0" step="1"
+                   oninput="syncNdSliderToInput('ndSliderCurrent','ndCurrent')">
+            <div class="range-ticks" id="ndTicksCurrent"></div>
+          </div>
+        </label>
+
+        <button class="small-button" onclick="copyToNew()">Copy to New Settings</button>
+        <span id="currentEvDisplay" class="ev-display"></span>
+      </div>
+    </div>
+
+    <!-- 新しい設定 -->
+    <div id="newSettings" class="tab-content">
+      <div class="section">
+        <!-- FPS -->
+        <label>
+          <div class="input-row">
+            <span class="param-label-text">New FPS:</span>
+            <input type="number" id="fpsNew" value="23.98"
+                   oninput="syncFpsInputToSlider('fpsNew','fpsSliderNew'); calculateNewExposure()"
+                   onwheel="cyclePreset(event,'fpsNew', fpsPresets)">
+            <button type="button" class="dec-btn" onclick="decrementValue('fpsNew')">−</button>
+            <button type="button" class="inc-btn" onclick="incrementValue('fpsNew')">＋</button>
+          </div>
+          <div class="range-container">
+            <input type="range" id="fpsSliderNew" min="0" step="1"
+                   oninput="syncFpsSliderToInput('fpsSliderNew','fpsNew'); calculateNewExposure()">
+            <div class="range-ticks" id="fpsTicksNew"></div>
+          </div>
+        </label>
+        <!-- Angle -->
+        <label id="labelAngleNew">
+          <div class="input-row">
+            <span class="param-label-text">New Shutter Angle:</span>
+            <input type="number" id="angleNew" value="172.8"
+                   oninput="syncAngleInputToSlider('angleNew','angleSliderNew'); calculateNewExposure()"
+                   onwheel="cyclePreset(event,'angleNew', anglePresets)">
+            <button type="button" class="dec-btn" onclick="decrementValue('angleNew')">−</button>
+            <button type="button" class="inc-btn" onclick="incrementValue('angleNew')">＋</button>
+            <span id="angleSpeedNewText" style="margin-left:8px; font-size:12px; color:#555;"></span>
+          </div>
+          <div class="range-container">
+            <input type="range" id="angleSliderNew" min="0" step="1"
+                   oninput="syncAngleSliderToInput('angleSliderNew','angleNew'); calculateNewExposure()">
+            <div class="range-ticks" id="angleTicksNew"></div>
+          </div>
+        </label>
+        <!-- Speed -->
+        <label id="labelSpeedNew">
+          <div class="input-row">
+            <span class="param-label-text">New Shutter Speed:</span>
+            <input type="text" id="speedNew" value="1/25"
+                   oninput="syncSpeedInputToSlider('speedNew','speedSliderNew'); calculateNewExposure()"
+                   onwheel="cyclePreset(event,'speedNew', shutterSpeedPresets)">
+            <button type="button" class="dec-btn" onclick="decrementValue('speedNew')">−</button>
+            <button type="button" class="inc-btn" onclick="incrementValue('speedNew')">＋</button>
+          </div>
+          <div class="range-container">
+            <input type="range" id="speedSliderNew" min="0" step="1"
+                   oninput="syncSpeedSliderToInput('speedSliderNew','speedNew'); calculateNewExposure()">
+            <div class="range-ticks" id="speedTicksNew"></div>
+          </div>
+        </label>
+        <!-- ISO -->
+        <label>
+          <div class="input-row">
+            <span class="param-label-text">New ISO:</span>
+            <input type="number" id="isoNew" value="800"
+                   oninput="syncIsoInputToSlider('isoNew','isoSliderNew'); calculateNewExposure()"
+                   onwheel="cyclePreset(event,'isoNew', isoPresets)">
+            <button type="button" class="dec-btn" onclick="decrementValue('isoNew')">−</button>
+            <button type="button" class="inc-btn" onclick="incrementValue('isoNew')">＋</button>
+          </div>
+          <div class="range-container">
+            <input type="range" id="isoSliderNew" min="0" step="1"
+                   oninput="syncIsoSliderToInput('isoSliderNew','isoNew'); calculateNewExposure()">
+            <div class="range-ticks" id="isoTicksNew"></div>
+          </div>
+        </label>
+        <!-- Aperture -->
+        <label>
+          <div class="input-row">
+            <span class="param-label-text">New F-stop:</span>
+            <input type="number" id="fstopNew" value="2.8"
+                   oninput="syncFstopInputToSlider('fstopNew','fstopSliderNew'); calculateNewExposure()"
+                   onwheel="cyclePreset(event,'fstopNew', fstopPresets)">
+            <button type="button" class="dec-btn" onclick="decrementValue('fstopNew')">−</button>
+            <button type="button" class="inc-btn" onclick="incrementValue('fstopNew')">＋</button>
+          </div>
+          <div class="range-container">
+            <input type="range" id="fstopSliderNew" min="0" max="36" step="1"
+                   oninput="syncFstopSliderToInput('fstopSliderNew','fstopNew'); calculateNewExposure()">
+            <div class="range-ticks" id="fstopTicksNew"></div>
+          </div>
+        </label>
+        <!-- ND -->
+        <label>
+          <div class="input-row">
+            <span class="param-label-text">New ND Value:</span>
+            <input type="number" id="ndNew" value="0.3"
+                   oninput="syncNdInputToSlider('ndNew','ndSliderNew'); calculateNewExposure()"
+                   onwheel="cyclePreset(event,'ndNew', ndPresets)">
+            <button type="button" class="dec-btn" onclick="decrementValue('ndNew')">−</button>
+            <button type="button" class="inc-btn" onclick="incrementValue('ndNew')">＋</button>
+          </div>
+          <div class="range-container">
+            <input type="range" id="ndSliderNew" min="0" step="1"
+                   oninput="syncNdSliderToInput('ndSliderNew','ndNew'); calculateNewExposure()">
+            <div class="range-ticks" id="ndTicksNew"></div>
+          </div>
+        </label>
+        <div class="results" id="calculationResult"></div>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    // ===== プリセット =====
+    const anglePresets50Hz      = [43.2,86.4,172.8,216,270,360];
+    const anglePresets60Hz      = [45,90,180,210,360];
+    let anglePresets            = anglePresets50Hz;
+    const shutterSpeedPresets50Hz = ["1/25","1/50","1/100","1/200","1/400"];
+    const shutterSpeedPresets60Hz = ["1/30","1/60","1/80","1/125"];
+    let shutterSpeedPresets     = shutterSpeedPresets50Hz;
+    const fstopPresets          = [1,1.1,1.3,1.4,1.6,1.8,2,2.2,2.5,2.8,3.2,3.6,4,4.5,5,5.6,6.3,7.1,8,9,10,11,12.7,14,16,18,20,22,25,28,32,35,40,45,51,57,64];
+    const isoPresets            = [100,125,160,200,250,320,400,500,640,800,1000,1250,1600,2000,2500,3200,4000,5000,6400,8000,10000,12800,16000,20000,25600];
+    const fpsPresets            = [23.976,24,29.97,30,48,60,72,96,120,240,480,960];
+    const ndDensityPresets      = [0,0.3,0.6,0.9,1.2,1.5,1.8];
+    const ndFactorPresets       = [0,2,4,8,16,32,64];
+    let ndPresets               = ndDensityPresets;
+
+    // helper to pick the closest preset
+    function nearest(arr, val) {
+      return arr.reduce((prev, curr) =>
+        Math.abs(curr - val) < Math.abs(prev - val) ? curr : prev
+      );
+    }
+
+    // ===== utility =====
+    function parseShutterSpeed(s){
+      const p = s.split('/');
+      return p.length===2 ? +p[0]/+p[1] : (+s)||0;
+    }
+    const importantFstops = [1,2,4,5.6,8,11,16,22,32,45,64];
+    const importantISOs   = [100,200,400,800,1600,3200,6400,12800,25600];
+
+    function updateTicks(sliderId,ticksId,presets){
+      const c = document.getElementById(ticksId);
+      c.innerHTML = '';
+      presets.forEach(v=>{
+        const w = document.createElement('div');
+        w.style.display='flex';
+        w.style.flexDirection='column';
+        w.style.alignItems='center';
+        w.style.flex='0 0 auto';
+        const bar=document.createElement('div');
+        bar.style.width='1px';
+        bar.style.height='8px';
+        bar.style.background='var(--accent-color)';
+        w.appendChild(bar);
+        if(
+          (ticksId.includes('fstopTicks') && importantFstops.includes(v)) ||
+          (ticksId.includes('isoTicks')   && importantISOs.includes(v))   ||
+          (!ticksId.includes('fstopTicks') && !ticksId.includes('isoTicks'))
+        ){
+          const lbl=document.createElement('div');
+          lbl.textContent=v;
+          lbl.style.marginTop='2px';
+          w.appendChild(lbl);
+        }
+        c.appendChild(w);
+      });
+    }
+
+    // ===== sync helpers =====
+    function makeIndexSync(p){
+      return {
+        s2i:(s,i)=>{
+          document.getElementById(i).value = p[+document.getElementById(s).value];
+          calculateNewExposure();
+        },
+        i2s:(i,s)=>{
+          const idx=p.indexOf(+document.getElementById(i).value);
+          if(idx!==-1) document.getElementById(s).value=idx;
+          calculateNewExposure();
+        }
+      };
+    }
+    const isoSync   = makeIndexSync(isoPresets);
+    const fpsSync   = makeIndexSync(fpsPresets);
+    const fstopSync = makeIndexSync(fstopPresets);
+    const speedSync = {
+      s2i:(s,i)=>{
+        document.getElementById(i).value=shutterSpeedPresets[+document.getElementById(s).value];
+        calculateNewExposure();
+      },
+      i2s:(i,s)=>{
+        const idx=shutterSpeedPresets.indexOf(document.getElementById(i).value.trim());
+        if(idx!==-1) document.getElementById(s).value=idx;
+        calculateNewExposure();
+      }
+    };
+    const ndSync = {
+      s2i:(s,i)=>{
+        document.getElementById(i).value=ndPresets[+document.getElementById(s).value];
+        calculateNewExposure();
+      },
+      i2s:(i,s)=>{
+        const idx=ndPresets.indexOf(+document.getElementById(i).value);
+        if(idx!==-1) document.getElementById(s).value=idx;
+        calculateNewExposure();
+      }
+    };
+
+    const syncIsoSliderToInput   = isoSync.s2i;
+    const syncIsoInputToSlider   = isoSync.i2s;
+    const syncFpsSliderToInput   = fpsSync.s2i;
+    const syncFpsInputToSlider   = fpsSync.i2s;
+    const syncFstopSliderToInput = fstopSync.s2i;
+    const syncFstopInputToSlider = fstopSync.i2s;
+    const syncSpeedSliderToInput = speedSync.s2i;
+    const syncSpeedInputToSlider = speedSync.i2s;
+    const syncNdSliderToInput    = ndSync.s2i;
+    const syncNdInputToSlider    = ndSync.i2s;
+
+    // Angle handlers
+    function syncAngleSliderToInput(sliderId,inputId){
+      const idx=+document.getElementById(sliderId).value;
+      document.getElementById(inputId).value=anglePresets[idx];
+      calculateNewExposure();
+    }
+    function syncAngleInputToSlider(inputId,sliderId){
+      const val=+document.getElementById(inputId).value;
+      const idx=anglePresets.indexOf(val);
+      if(idx!==-1) document.getElementById(sliderId).value=idx;
+      calculateNewExposure();
+    }
+
+    // cycle preset on wheel
+    function cyclePreset(e,inputId,presets){
+      const input=document.getElementById(inputId);
+      let val      = inputId.endsWith('Speed') ? input.value.trim() : +input.value;
+      let idx      = presets.indexOf(val);
+      if(idx===-1) idx=0;
+      idx += e.deltaY>0 ? 1 : -1;
+      idx = Math.max(0,Math.min(presets.length-1,idx));
+      input.value=presets[idx];
+      // sync slider
+      const sId=inputId.replace(/Current|New/,'Slider');
+      if(inputId.includes('Angle'))      syncAngleInputToSlider(inputId,sId);
+      else if(inputId.includes('Iso'))   syncIsoInputToSlider(inputId,sId);
+      else if(inputId.includes('Fps'))   syncFpsInputToSlider(inputId,sId);
+      else if(inputId.includes('Nd'))    syncNdInputToSlider(inputId,sId);
+      else if(inputId.includes('Fstop')) syncFstopInputToSlider(inputId,sId);
+      else                                syncSpeedInputToSlider(inputId,sId);
+    }
+
+    // plus / minus buttons cycling through presets
+    function incrementValue(id) {
+      const input = document.getElementById(id);
+      const isNew = id.endsWith('New');
+      const suffix = isNew ? 'New' : 'Current';
+      // derive key: 'angle', 'speed', 'fstop', 'iso', 'fps', 'nd'
+      const key = id.slice(0, -suffix.length);
+      let presets;
+      switch (key.toLowerCase()) {
+        case 'angle': presets = anglePresets; break;
+        case 'speed': presets = shutterSpeedPresets; break;
+        case 'fstop': presets = fstopPresets; break;
+        case 'iso': presets = isoPresets; break;
+        case 'fps': presets = fpsPresets; break;
+        case 'nd': presets = ndPresets; break;
+        default: return;
+      }
+      // Determine current index
+      const rawValue = key === 'speed' ? input.value.trim() : +input.value;
+      let idx = presets.indexOf(rawValue);
+      if (idx === -1) idx = 0;
+      // Move to next preset
+      idx = Math.min(presets.length - 1, idx + 1);
+      input.value = presets[idx];
+      // Sync slider
+      const slider = document.getElementById(key + 'Slider' + suffix);
+      if (slider) slider.value = idx;
+      calculateNewExposure();
+    }
+
+    function decrementValue(id) {
+      const input = document.getElementById(id);
+      const isNew = id.endsWith('New');
+      const suffix = isNew ? 'New' : 'Current';
+      const key = id.slice(0, -suffix.length);
+      let presets;
+      switch (key.toLowerCase()) {
+        case 'angle': presets = anglePresets; break;
+        case 'speed': presets = shutterSpeedPresets; break;
+        case 'fstop': presets = fstopPresets; break;
+        case 'iso': presets = isoPresets; break;
+        case 'fps': presets = fpsPresets; break;
+        case 'nd': presets = ndPresets; break;
+        default: return;
+      }
+      const rawValue = key === 'speed' ? input.value.trim() : +input.value;
+      let idx = presets.indexOf(rawValue);
+      if (idx === -1) idx = 0;
+      // Move to previous preset
+      idx = Math.max(0, idx - 1);
+      input.value = presets[idx];
+      const slider = document.getElementById(key + 'Slider' + suffix);
+      if (slider) slider.value = idx;
+      calculateNewExposure();
+    }
+
+    // core functions
+    function syncInputToSlider(i,s){
+      document.getElementById(s).value=document.getElementById(i).value;
+      calculateNewExposure();
+    }
+    function toggleShutterMode(){
+      const isAngle=document.getElementById("shutterMode").value==="angle";
+      document.getElementById("labelAngleCurrent").style.display=isAngle?"block":"none";
+      document.getElementById("labelAngleNew").style.display=isAngle?"block":"none";
+      document.getElementById("labelSpeedCurrent").style.display=isAngle?"none":"block";
+      document.getElementById("labelSpeedNew").style.display=isAngle?"none":"block";
+      calculateNewExposure();
+    }
+    function updateHzMode(){
+      const hz=document.getElementById("shutterHz").value;
+      anglePresets        = hz==="50"?anglePresets50Hz:anglePresets60Hz;
+      shutterSpeedPresets = hz==="50"?shutterSpeedPresets50Hz:shutterSpeedPresets60Hz;
+      updateTicks("angleSliderCurrent","angleTicksCurrent",anglePresets);
+      updateTicks("angleSliderNew","angleTicksNew",anglePresets);
+      document.getElementById("speedSliderCurrent").max=shutterSpeedPresets.length-1;
+      document.getElementById("speedSliderNew").max    =shutterSpeedPresets.length-1;
+      updateTicks("speedSliderCurrent","speedTicksCurrent",shutterSpeedPresets);
+      updateTicks("speedSliderNew","speedTicksNew",shutterSpeedPresets);
+    }
+    function updateNdMode(){
+      ndPresets=document.getElementById("ndMode").value==="density"?ndDensityPresets:ndFactorPresets;
+      updateTicks("ndSliderCurrent","ndTicksCurrent",ndPresets);
+      updateTicks("ndSliderNew","ndTicksNew",ndPresets);
+      ["Current","New"].forEach(suf=>{
+        const s=document.getElementById("ndSlider"+suf), i=document.getElementById("nd"+suf);
+        s.max=ndPresets.length-1;
+        const idx=ndPresets.indexOf(+i.value);
+        s.value=idx===-1?0:idx;
+      });
+    }
+    // copy current values to the New panel *and* keep sliders in sync
+    function copyToNew () {
+      const params = ["angle", "speed", "fstop", "iso", "fps", "nd"];
+
+      params.forEach(key => {
+        // copy value
+        const curVal = document.getElementById(`${key}Current`).value;
+        const newInput = document.getElementById(`${key}New`);
+        newInput.value = curVal;
+
+        const sliderId = `${key}SliderNew`;
+
+        // sync the matching slider **using the correct mapping helper**
+        switch (key) {
+          case "angle":
+            syncAngleInputToSlider(`${key}New`, sliderId);
+            break;
+          case "speed":
+            syncSpeedInputToSlider(`${key}New`, sliderId);
+            break;
+          case "fstop":
+            syncFstopInputToSlider(`${key}New`, sliderId);
+            break;
+          case "iso":
+            syncIsoInputToSlider(`${key}New`, sliderId);
+            break;
+          case "fps":
+            syncFpsInputToSlider(`${key}New`, sliderId);
+            break;
+          case "nd":
+            syncNdInputToSlider(`${key}New`, sliderId);
+            break;
+        }
+      });
+
+      calculateNewExposure();
+    }
+    function calculateNewExposure(){
+      // parse values
+      const g=id=>parseFloat(document.getElementById(id).value);
+      const cur={fps:g("fpsCurrent"),angle:g("angleCurrent"),fstop:g("fstopCurrent"),iso:g("isoCurrent"),nd:g("ndCurrent")};
+      const nxt={fps:g("fpsNew"),angle:g("angleNew"),fstop:g("fstopNew"),iso:g("isoNew"),nd:g("ndNew")};
+      const mode=document.getElementById("shutterMode").value;
+      const cs=mode==="angle"?cur.angle/360/cur.fps:parseShutterSpeed(document.getElementById("speedCurrent").value);
+      const ns=mode==="angle"?nxt.angle/360/nxt.fps:parseShutterSpeed(document.getElementById("speedNew").value);
+      let stopsCur, stopsNew;
+      if (document.getElementById("ndMode").value === "density") {
+        // Each 0.3 density step equals 1 EV stop
+        stopsCur = cur.nd / 0.3;
+        stopsNew = nxt.nd / 0.3;
+      } else {
+        // In factor mode, stops = log2(filter factor)
+        stopsCur = Math.log2(cur.nd);
+        stopsNew = Math.log2(nxt.nd);
+      }
+      // discrete F-stop and ISO stops (1 stop per 3 preset steps)
+      const idxFCur = fstopPresets.indexOf(cur.fstop);
+      const stopsFcur = idxFCur / 3;
+      const idxIsoCur = isoPresets.indexOf(cur.iso);
+      const stopsIsoCur = idxIsoCur / 3;
+      const stopsTimeCur = -Math.log2(cs);
+      const evCurRaw = stopsFcur + stopsTimeCur - stopsIsoCur + stopsCur;
+      const evCur = Math.round(evCurRaw * 10) / 10;
+      document.getElementById("currentEvDisplay").textContent = `Current EV: ${evCur.toFixed(1)}`;
+      // discrete F-stop and ISO stops for new settings
+      const idxFNew = fstopPresets.indexOf(nxt.fstop);
+      const stopsFnew = idxFNew / 3;
+      const idxIsoNew = isoPresets.indexOf(nxt.iso);
+      const stopsIsoNew = idxIsoNew / 3;
+      const stopsTimeNew = -Math.log2(ns);
+      const evNewRaw = stopsFnew + stopsTimeNew - stopsIsoNew + stopsNew;
+      const evNew = Math.round(evNewRaw * 10) / 10;
+      // EV difference: current minus new
+      const diffRaw = evCur - evNew;
+      const diff = Math.round(diffRaw * 10) / 10;
+      // convert to stops/thirds
+      const thirds=Math.round(diff*3), whole=Math.trunc(thirds/3), rem=Math.abs(thirds%3);
+      let stopsLabel="";
+      if(rem===0) stopsLabel=`${whole} stop${whole===1?"":"s"}`;
+      else {
+        const frac=`${rem}/3`;
+        stopsLabel=whole!==0?`${whole} +${frac}`:`${thirds<0?"-":""}${frac}`;
+      }
+      // === Suggest new parameter values to make New EV equal Current EV ===
+      const targetEV = evCur;
+
+      // F-stop suggestion
+      let bestF = fstopPresets[0], minDiffF = Infinity;
+      fstopPresets.forEach(fVal => {
+        const tCandidate = mode === "angle"
+          ? (nxt.angle / 360) / nxt.fps
+          : parseShutterSpeed(document.getElementById("speedNew").value);
+        const ndStops = document.getElementById("ndMode").value === "density"
+          ? nxt.nd / 0.3
+          : Math.log2(nxt.nd);
+        const ev = Math.log2(fVal * fVal / tCandidate)
+                 - Math.log2(nxt.iso / 100)
+                 + ndStops;
+        const diffVal = Math.abs(ev - targetEV);
+        if (diffVal < minDiffF) { minDiffF = diffVal; bestF = fVal; }
+      });
+
+      // ISO suggestion
+      let bestISO = isoPresets[0], minDiffISO = Infinity;
+      isoPresets.forEach(iVal => {
+        const tCandidate = mode === "angle"
+          ? (nxt.angle / 360) / nxt.fps
+          : parseShutterSpeed(document.getElementById("speedNew").value);
+        const ndStops = document.getElementById("ndMode").value === "density"
+          ? nxt.nd / 0.3
+          : Math.log2(nxt.nd);
+        const ev = Math.log2(nxt.fstop * nxt.fstop / tCandidate)
+                 - Math.log2(iVal / 100)
+                 + ndStops;
+        const diffVal = Math.abs(ev - targetEV);
+        if (diffVal < minDiffISO) { minDiffISO = diffVal; bestISO = iVal; }
+      });
+
+      // ND suggestion
+      let bestND = ndPresets[0], minDiffND = Infinity;
+      ndPresets.forEach(ndVal => {
+        const tCandidate = mode === "angle"
+          ? (nxt.angle / 360) / nxt.fps
+          : parseShutterSpeed(document.getElementById("speedNew").value);
+        const ndStops = document.getElementById("ndMode").value === "density"
+          ? ndVal / 0.3
+          : Math.log2(ndVal);
+        const ev = Math.log2(nxt.fstop * nxt.fstop / tCandidate)
+                 - Math.log2(nxt.iso / 100)
+                 + ndStops;
+        const diffVal = Math.abs(ev - targetEV);
+        if (diffVal < minDiffND) { minDiffND = diffVal; bestND = ndVal; }
+      });
+
+      // Shutter suggestion
+      let bestShutter, minDiffShutter = Infinity;
+      if (mode === "angle") {
+        anglePresets.forEach(aVal => {
+          const tCandidate = (aVal / 360) / nxt.fps;
+          const ndStops = document.getElementById("ndMode").value === "density"
+            ? nxt.nd / 0.3
+            : Math.log2(nxt.nd);
+          const ev = Math.log2(nxt.fstop * nxt.fstop / tCandidate)
+                   - Math.log2(nxt.iso / 100)
+                   + ndStops;
+          const diffVal = Math.abs(ev - targetEV);
+          if (diffVal < minDiffShutter) { minDiffShutter = diffVal; bestShutter = aVal + "°"; }
+        });
+      } else {
+        shutterSpeedPresets.forEach(sVal => {
+          const tCandidate = parseShutterSpeed(sVal);
+          const ndStops = document.getElementById("ndMode").value === "density"
+            ? nxt.nd / 0.3
+            : Math.log2(nxt.nd);
+          const ev = Math.log2(nxt.fstop * nxt.fstop / tCandidate)
+                   - Math.log2(nxt.iso / 100)
+                   + ndStops;
+          const diffVal = Math.abs(ev - targetEV);
+          if (diffVal < minDiffShutter) { minDiffShutter = diffVal; bestShutter = sVal; }
+        });
+      }
+
+      // assemble suggestions HTML
+      const evHtml =
+        `Current EV: ${evCur.toFixed(1)}<br>` +
+        `New EV: ${evNew.toFixed(1)}<br>` +
+        `EV Diff: ${diff.toFixed(1)} (${stopsLabel})`;
+      const suggHtml =
+        `Match Current EV by:<br>` +
+        `- F-stop → ${bestF}<br>` +
+        `- ISO → ${bestISO}<br>` +
+        `- ND → ${bestND}<br>` +
+        `- Shutter → ${bestShutter}`;
+
+      // render both EV info and suggestions
+      document.getElementById("calculationResult").innerHTML =
+        `<div class="ev-block">${evHtml}</div><div class="sugg-block">${suggHtml}</div>`;
+      updateAngleSpeedDisplays();
+    }
+
+    function updateAngleSpeedDisplays() {
+      ["Current","New"].forEach(suffix => {
+        const angle = parseFloat(document.getElementById("angle" + suffix).value);
+        const fps = parseFloat(document.getElementById("fps" + suffix).value);
+        const seconds = (angle / 360) / fps;
+        const rate = seconds > 0 ? Math.round(1 / seconds) : 0;
+        const text = rate > 0 ? `1/${rate}` : "-";
+        document.getElementById("angleSpeed" + suffix + "Text").textContent = text;
+      });
+    }
+
+    window.onload=()=>{
+      // init sliders
+      ["Current","New"].forEach(suf=>{
+        // angle
+        let s=document.getElementById("angleSlider"+suf), i=document.getElementById("angle"+suf);
+        s.max=anglePresets.length-1;
+        let idx=anglePresets.indexOf(+i.value);
+        s.value=idx===-1?0:idx;
+        // fstop
+        s=document.getElementById("fstopSlider"+suf), i=document.getElementById("fstop"+suf);
+        s.max=fstopPresets.length-1;
+        idx=fstopPresets.indexOf(+i.value);
+        s.value=idx===-1?0:idx;
+        // iso
+        s=document.getElementById("isoSlider"+suf), i=document.getElementById("iso"+suf);
+        s.max=isoPresets.length-1;
+        idx=isoPresets.indexOf(+i.value);
+        s.value=idx===-1?0:idx;
+        // fps
+        s=document.getElementById("fpsSlider"+suf), i=document.getElementById("fps"+suf);
+        s.max=fpsPresets.length-1;
+        idx=fpsPresets.indexOf(+i.value);
+        s.value=idx===-1?0:idx;
+      });
+      // speed
+      document.getElementById("speedSliderCurrent").max=shutterSpeedPresets.length-1;
+      document.getElementById("speedSliderNew").max=shutterSpeedPresets.length-1;
+      // nd
+      ["Current","New"].forEach(suf=>{
+        const s=document.getElementById("ndSlider"+suf), i=document.getElementById("nd"+suf);
+        s.max=ndPresets.length-1;
+        const idx=ndPresets.indexOf(+i.value);
+        s.value=idx===-1?0:idx;
+      });
+      // ticks
+      updateTicks("angleSliderCurrent","angleTicksCurrent",anglePresets);
+      updateTicks("angleSliderNew","angleTicksNew",anglePresets);
+      updateTicks("fstopSliderCurrent","fstopTicksCurrent",fstopPresets);
+      updateTicks("fstopSliderNew","fstopTicksNew",fstopPresets);
+      updateTicks("isoSliderCurrent","isoTicksCurrent",isoPresets);
+      updateTicks("isoSliderNew","isoTicksNew",isoPresets);
+      updateTicks("fpsSliderCurrent","fpsTicksCurrent",fpsPresets);
+      updateTicks("fpsSliderNew","fpsTicksNew",fpsPresets);
+      updateTicks("speedSliderCurrent","speedTicksCurrent",shutterSpeedPresets);
+      updateTicks("speedSliderNew","speedTicksNew",shutterSpeedPresets);
+      updateTicks("ndSliderCurrent","ndTicksCurrent",ndPresets);
+      updateTicks("ndSliderNew","ndTicksNew",ndPresets);
+
+      // --- TAB SWITCHING (restore v2.8 behaviour) ---
+      document.querySelectorAll('.tab-button').forEach(button => {
+        button.addEventListener('click', () => {
+          // update active state on tab headers
+          document.querySelectorAll('.tab-button').forEach(b =>
+            b.classList.toggle('active', b === button)
+          );
+          // show / hide the corresponding tab contents
+          document.querySelectorAll('.tab-content').forEach(section =>
+            section.classList.toggle('active', section.id === button.dataset.target)
+          );
+        });
+      });
+
+      // toggles
+      const modeSwitch=document.getElementById('shutterModeSwitch');
+      const modeLabel =document.getElementById('shutterModeLabel');
+      modeSwitch.checked = document.getElementById('shutterMode').value==='speed';
+      modeLabel.textContent = modeSwitch.checked?'Shutter Speed':'Shutter Angle';
+      modeSwitch.addEventListener('change',e=>{
+        const isSpeed=e.target.checked;
+        document.getElementById('shutterMode').value = isSpeed?'speed':'angle';
+        modeLabel.textContent = isSpeed?'Shutter Speed':'Shutter Angle';
+        toggleShutterMode();
+      });
+      const hzSwitch=document.getElementById('hzSwitch');
+      const hzLabel=document.getElementById('hzLabel');
+      hzSwitch.checked = document.getElementById('shutterHz').value==='60';
+      hzLabel.textContent = hzSwitch.checked?'60Hz (West Japan)':'50Hz (East Japan)';
+      hzSwitch.addEventListener('change',e=>{
+        const is60=e.target.checked;
+        document.getElementById('shutterHz').value = is60?'60':'50';
+        hzLabel.textContent = is60?'60Hz (West Japan)':'50Hz (East Japan)';
+        updateHzMode();
+      });
+      const ndSwitch=document.getElementById('ndModeSwitch');
+      const ndLabel=document.getElementById('ndModeLabel');
+      ndSwitch.checked = document.getElementById('ndMode').value==='factor';
+      ndLabel.textContent = ndSwitch.checked?'Factor Mode':'0.3 Step';
+      ndSwitch.addEventListener('change',e=>{
+        const isFactor=e.target.checked;
+        document.getElementById('ndMode').value = isFactor?'factor':'density';
+        ndLabel.textContent = isFactor?'Factor Mode':'0.3 Step';
+        updateNdMode();
+      });
+
+      toggleShutterMode();
+      updateHzMode();
+      calculateNewExposure();
+      updateAngleSpeedDisplays();
+    };
+  </script>
+</body>
+</html>
