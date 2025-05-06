@@ -1,3 +1,4 @@
+<!-- ver 4.4 -->
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -101,6 +102,13 @@ input[type="number"], input[type="text"] {
       box-shadow: 4px 4px 6px #bebebe, -4px -4px 6px #ffffff;
       cursor: pointer;
       margin-top: -5px;
+    }
+    @media screen and (max-width: 480px) {
+      input[type="range"]::-webkit-slider-thumb {
+        width: 32px;
+        height: 32px;
+        margin-top: -13px;
+      }
     }
     /* Tick marks container */
     .range-container .range-ticks {
