@@ -4,7 +4,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=0.7, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-  <title>露出設定</title>
+  <link rel="icon" type="image/png" href="1BF48D5E-D71C-47CA-B6A3-3C6B010F271B.png">
+  <link rel="apple-touch-icon" href="1BF48D5E-D71C-47CA-B6A3-3C6B010F271B.png">
+  <title>Exposure  Calculator</title>
   <style>
     :root {
       --accent-color: #ff5722;
@@ -326,7 +328,7 @@ input[type="number"], input[type="text"] {
         <!-- FPS -->
         <label>
           <div class="input-row">
-            <span class="param-label-text">Current FPS:</span>
+            <span class="param-label-text">FPS:</span>
             <input type="number" id="fpsCurrent" value="23.98"
                    oninput="syncFpsInputToSlider('fpsCurrent','fpsSliderCurrent')"
                    onwheel="cyclePreset(event,'fpsCurrent', fpsPresets)">
@@ -342,7 +344,7 @@ input[type="number"], input[type="text"] {
         <!-- シャッターアングル -->
         <label id="labelAngleCurrent">
           <div class="input-row">
-            <span class="param-label-text">Current Shutter Angle:</span>
+            <span class="param-label-text">Shutter Angle:</span>
             <input type="number" id="angleCurrent" value="172.8"
                    oninput="syncAngleInputToSlider('angleCurrent','angleSliderCurrent')"
                    onwheel="cyclePreset(event,'angleCurrent', anglePresets)">
@@ -359,7 +361,7 @@ input[type="number"], input[type="text"] {
         <!-- シャッタースピード -->
         <label id="labelSpeedCurrent">
           <div class="input-row">
-            <span class="param-label-text">Current Shutter Speed:</span>
+            <span class="param-label-text">Shutter Speed:</span>
             <input type="text" id="speedCurrent" value="1/25"
                    oninput="syncSpeedInputToSlider('speedCurrent','speedSliderCurrent')"
                    onwheel="cyclePreset(event,'speedCurrent', shutterSpeedPresets)">
@@ -375,7 +377,7 @@ input[type="number"], input[type="text"] {
         <!-- ISO -->
         <label>
           <div class="input-row">
-            <span class="param-label-text">Current ISO:</span>
+            <span class="param-label-text">ISO:</span>
             <input type="number" id="isoCurrent" value="800"
                    oninput="syncIsoInputToSlider('isoCurrent','isoSliderCurrent')"
                    onwheel="cyclePreset(event,'isoCurrent', isoPresets)">
@@ -391,7 +393,7 @@ input[type="number"], input[type="text"] {
         <!-- F値 -->
         <label>
           <div class="input-row">
-            <span class="param-label-text">Current F-stop:</span>
+            <span class="param-label-text">F-stop:</span>
             <input type="number" id="fstopCurrent" value="2.8"
                    oninput="syncFstopInputToSlider('fstopCurrent','fstopSliderCurrent')"
                    onwheel="cyclePreset(event,'fstopCurrent', fstopPresets)">
@@ -407,7 +409,7 @@ input[type="number"], input[type="text"] {
         <!-- ND -->
         <label>
           <div class="input-row">
-            <span class="param-label-text">Current ND Value:</span>
+            <span class="param-label-text">ND Value:</span>
             <input type="number" id="ndCurrent" value="0.3"
                    oninput="syncNdInputToSlider('ndCurrent','ndSliderCurrent')"
                    onwheel="cyclePreset(event,'ndCurrent', ndPresets)">
