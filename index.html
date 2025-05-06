@@ -3,11 +3,15 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=0.7, viewport-fit=cover">
+  <meta name="viewport" content="width=device-width, initial-scale=0.7, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <title>露出設定</title>
   <style>
     :root {
       --accent-color: #ff5722;
+    }
+    html, body {
+      touch-action: manipulation;
+      -ms-touch-action: manipulation;
     }
     /* Neumorphic Design */
     body {
@@ -952,10 +956,7 @@ input[type="number"], input[type="text"] {
     }
 
     window.onload=()=>{
-      // Enable direct manipulation for mobile sliders
-      document.querySelectorAll('input[type="range"]').forEach(slider => {
-        slider.addEventListener('touchstart', e => { e.preventDefault(); }, { passive: false });
-      });
+      
       // init sliders
       ["Current","New"].forEach(suf=>{
         // angle
