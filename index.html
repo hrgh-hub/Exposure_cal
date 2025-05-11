@@ -1,10 +1,10 @@
-<!-- ver 4.4 -->
+<!-- ver 4.9 -->
 <!DOCTYPE html>
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=0.7, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
- <link rel="icon" href="favicon.ico" type="image/x-icon">
+  <link rel="icon" href="favicon.ico" type="image/x-icon">
   <link rel="apple-touch-icon" href="apple-touch-icon.png" sizes="180x180">　
   <title>Exposure  Calculator</title>
   <style>
@@ -13,7 +13,7 @@
     }
     html, body {
       touch-action: manipulation;
-      -ms-touch-action: manipulation;
+      -ms-touch-action: manipulation;`
     }
     /* Neumorphic Design */
     body {
@@ -252,6 +252,7 @@ input[type="number"], input[type="text"] {
       cursor: pointer;
       box-shadow: 4px 4px 6px #bebebe, -4px -4px 6px #ffffff;
       transition: box-shadow .1s ease, transform .1s ease;
+      touch-action: manipulation;   /* ← これを追加 */
     }
     .inc-btn:active,
     .dec-btn:active {
@@ -367,6 +368,7 @@ input[type="number"], input[type="text"] {
                    onwheel="cyclePreset(event,'speedCurrent', shutterSpeedPresets)">
             <button type="button" class="dec-btn" onclick="decrementValue('speedCurrent')">−</button>
             <button type="button" class="inc-btn" onclick="incrementValue('speedCurrent')">＋</button>
+            <span id="angleSpeedCurrentTextClone" style="margin-left:8px; font-size:12px; color:#555;"></span>
           </div>
           <div class="range-container">
             <input type="range" id="speedSliderCurrent" min="0" step="1"
@@ -473,6 +475,7 @@ input[type="number"], input[type="text"] {
                    onwheel="cyclePreset(event,'speedNew', shutterSpeedPresets)">
             <button type="button" class="dec-btn" onclick="decrementValue('speedNew')">−</button>
             <button type="button" class="inc-btn" onclick="incrementValue('speedNew')">＋</button>
+            <span id="angleSpeedNewTextClone" style="margin-left:8px; font-size:12px; color:#555;"></span>
           </div>
           <div class="range-container">
             <input type="range" id="speedSliderNew" min="0" step="1"
@@ -548,6 +551,7 @@ input[type="number"], input[type="text"] {
     const ndDensityPresets      = [0,0.3,0.6,0.9,1.2,1.5,1.8];
     const ndFactorPresets       = [0,2,4,8,16,32,64];
     let ndPresets               = ndDensityPresets;
+    let lastShutterMode = "angle";   // 直前のモードを記憶
 
     // helper to pick the closest preset
     function nearest(arr, val) {
@@ -555,7 +559,41 @@ input[type="number"], input[type="text"] {
         Math.abs(curr - val) < Math.abs(prev - val) ? curr : prev
       );
     }
+function convertValues(fromMode, toMode){
+  if(fromMode === toMode) return;
 
+  // Angle → Speed
+  if(fromMode === "angle" && toMode === "speed"){
+    ["Current","New"].forEach(suffix => {
+      const angle = parseFloat(document.getElementById("angle"+suffix).value);
+      const fps   = parseFloat(document.getElementById("fps"+suffix).value);
+      if(angle > 0 && fps > 0){
+        const seconds = (angle / 360) / fps;
+        const denom   = Math.round(1 / seconds);
+        const speedStr = denom > 0 ? `1/${denom}` : "-";
+        const inp = "speed" + suffix;
+        document.getElementById(inp).value = speedStr;
+        syncSpeedInputToSlider(inp, "speedSlider" + suffix);
+      }
+    });
+  }
+
+  // Speed → Angle
+  if(fromMode === "speed" && toMode === "angle"){
+    ["Current","New"].forEach(suffix => {
+      const speedStr = document.getElementById("speed"+suffix).value.trim();
+      const seconds  = parseShutterSpeed(speedStr);
+      const fps      = parseFloat(document.getElementById("fps"+suffix).value);
+      if(seconds > 0 && fps > 0){
+        const raw   = seconds * fps * 360;
+        const angle = nearest(anglePresets, raw);      // プリセットにスナップ
+        const inp = "angle" + suffix;
+        document.getElementById(inp).value = angle;
+        syncAngleInputToSlider(inp, "angleSlider" + suffix);
+      }
+    });
+  }
+}
     // ===== utility =====
     function parseShutterSpeed(s){
       const p = s.split('/');
@@ -737,13 +775,22 @@ input[type="number"], input[type="text"] {
       calculateNewExposure();
     }
     function toggleShutterMode(){
-      const isAngle=document.getElementById("shutterMode").value==="angle";
-      document.getElementById("labelAngleCurrent").style.display=isAngle?"block":"none";
-      document.getElementById("labelAngleNew").style.display=isAngle?"block":"none";
-      document.getElementById("labelSpeedCurrent").style.display=isAngle?"none":"block";
-      document.getElementById("labelSpeedNew").style.display=isAngle?"none":"block";
-      calculateNewExposure();
-    }
+  const newMode = document.getElementById("shutterMode").value;   // "angle" or "speed"
+
+  // ① モード切替に合わせて値を変換
+  convertValues(lastShutterMode, newMode);
+
+  // ② 表示を切り替え
+  const isAngle = newMode === "angle";
+  document.getElementById("labelAngleCurrent").style.display = isAngle ? "block" : "none";
+  document.getElementById("labelAngleNew").style.display     = isAngle ? "block" : "none";
+  document.getElementById("labelSpeedCurrent").style.display = isAngle ? "none"  : "block";
+  document.getElementById("labelSpeedNew").style.display     = isAngle ? "none"  : "block";
+
+  // ③ 計算を更新
+  lastShutterMode = newMode;      // 次回切替のために保存
+  calculateNewExposure();
+}
     function updateHzMode(){
       const hz=document.getElementById("shutterHz").value;
       anglePresets        = hz==="50"?anglePresets50Hz:anglePresets60Hz;
@@ -947,13 +994,32 @@ input[type="number"], input[type="text"] {
     }
 
     function updateAngleSpeedDisplays() {
+      const mode = document.getElementById("shutterMode").value; // "angle" or "speed"
       ["Current","New"].forEach(suffix => {
-        const angle = parseFloat(document.getElementById("angle" + suffix).value);
+        let display = "-";
         const fps = parseFloat(document.getElementById("fps" + suffix).value);
-        const seconds = (angle / 360) / fps;
-        const rate = seconds > 0 ? Math.round(1 / seconds) : 0;
-        const text = rate > 0 ? `1/${rate}` : "-";
-        document.getElementById("angleSpeed" + suffix + "Text").textContent = text;
+
+        if (mode === "angle") {
+          // Angle is primary, show equivalent shutter speed
+          const angle = parseFloat(document.getElementById("angle" + suffix).value);
+          const seconds = (angle / 360) / fps;
+          const rate = seconds > 0 ? Math.round(1 / seconds) : 0;
+          display = rate > 0 ? `1/${rate}` : "-";
+        } else {
+          // Speed is primary, show equivalent shutter angle
+          const speedStr = document.getElementById("speed" + suffix).value.trim();
+          const seconds  = parseShutterSpeed(speedStr);
+          if (seconds > 0 && fps > 0) {
+            const angleRaw = (seconds * fps) * 360;
+            const snapped  = nearest(anglePresets, angleRaw); // snap to the closest preset
+            display = `${snapped}°`;
+          }
+        }
+
+        // Update both the original span (hidden/shown with mode) and the clone shown on Speed row
+        document.getElementById("angleSpeed" + suffix + "Text").textContent = display;
+        const cloneEl = document.getElementById("angleSpeed" + suffix + "TextClone");
+        if (cloneEl) cloneEl.textContent = display;
       });
     }
 
@@ -1053,6 +1119,7 @@ input[type="number"], input[type="text"] {
       });
 
       toggleShutterMode();
+      lastShutterMode = document.getElementById("shutterMode").value;
       updateHzMode();
       calculateNewExposure();
       updateAngleSpeedDisplays();
