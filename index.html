@@ -61,11 +61,20 @@
     .input-row {
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 12px;      /* tighter space between label, input, and +/- */
       margin-bottom: 4px;
     }
+    /* Align each parameter label to a fixed width for cleaner columns */
+    .param-label-text {
+      flex: 0 0 120px;   /* slightly wider fixed column for neat alignment */
+      text-align: center;
+      padding-right: 8px;/* more breathing room before the input */
+      font-weight: 500;
+      white-space: nowrap; /* prevent accidental wrapping on small screens */
+      color: #444;
+    }
 input[type="number"], input[type="text"] {
-      width: 50%;
+      width: 35%;
       font-size: 14px;
       padding: 8px;
       text-align: center;
@@ -246,13 +255,18 @@ input[type="number"], input[type="text"] {
       line-height: 30px;
       border: none;
       border-radius: 6px;
-      margin-left: 4px;
+      margin-left: 2px;
       background: #e0e0e0;
       color: var(--accent-color);
       cursor: pointer;
       box-shadow: 4px 4px 6px #bebebe, -4px -4px 6px #ffffff;
       transition: box-shadow .1s ease, transform .1s ease;
       touch-action: manipulation;   /* ← これを追加 */
+    }
+
+    /* Extra space between number input and the first (−) button */
+    .dec-btn {
+      margin-left: 20px;   /* widen gap from input box */
     }
     .inc-btn:active,
     .dec-btn:active {
