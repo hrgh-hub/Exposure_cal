@@ -1,4 +1,4 @@
-<!-- ver 5.2 -->
+<!-- ver 5.3 -->
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -552,7 +552,7 @@ input[type="number"], input[type="text"] {
   </div>
 
   <script>
-    const APP_VERSION = "5.2";
+    const APP_VERSION = "5.3";
     // ===== プリセット =====
     const anglePresets50Hz      = [43.2,86.4,172.8,216,270,360];
     const anglePresets60Hz      = [45,90,180,210,360];
@@ -1021,13 +1021,13 @@ function convertValues(fromMode, toMode){
           const rate = seconds > 0 ? Math.round(1 / seconds) : 0;
           display = rate > 0 ? `1/${rate}` : "-";
         } else {
-          // Speed is primary, show equivalent shutter angle
+          // Speed is primary, show equivalent shutter angle (no snapping, always show true value rounded to 1 decimal)
           const speedStr = document.getElementById("speed" + suffix).value.trim();
           const seconds  = parseShutterSpeed(speedStr);
           if (seconds > 0 && fps > 0) {
             const angleRaw = (seconds * fps) * 360;
-            const snapped  = nearest(anglePresets, angleRaw); // snap to the closest preset
-            display = `${snapped}°`;
+            const angleRounded = Math.round(angleRaw * 10) / 10;   // one‑decimal precision
+            display = `${angleRounded}°`;
           }
         }
 
